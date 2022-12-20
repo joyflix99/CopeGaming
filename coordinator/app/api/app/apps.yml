@@ -12,3 +12,11 @@
   device:
     - pc
     - mobile
+
+- id: GTAVC
+  name: GTAViceCity
+  poster_url: 'https://m.media-amazon.com/images/I/619APNW8HVL._SX258_BO1,204,203,200_QL70_ML2_.jpg'
+  type: game
+  device:
+    - pc
+    - mobile
