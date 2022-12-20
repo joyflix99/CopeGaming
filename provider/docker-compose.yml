@@ -16,3 +16,9 @@ services:
       - ./appconf/${APP_NAME}.env
     volumes:
       - ../appvm/apps/${APP_NAME}:/appvm/app
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
