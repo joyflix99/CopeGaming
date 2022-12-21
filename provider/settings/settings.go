@@ -20,7 +20,7 @@ func init() {
 	SinglePort = 8443
 	DisableDefaultInterceptors = false
 
-	VideoCodec = "vpx"
+	VideoCodec = "h264"
 
 	CoordinatorAddr = "localhost:8080"
 }
