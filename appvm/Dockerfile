@@ -77,6 +77,15 @@ ENV WINEDEBUG fixme-all
 
 WORKDIR /appvm
 
+# Install lutris
+RUN add-apt-repository ppa:lutris-team/lutris
+RUN apt-get update
+
+COPY lutris/lutris_0.5.12_all.deb lutris_0.5.12_all.deb
+RUN DEBIAN_FRONTEND=noninteractive dpkg -i lutris_0.5.12_all.deb; exit 0
+RUN DEBIAN_FRONTEND=noninteractive apt --fix-broken install -y
+RUN apt-get install pciutils -y
+
 COPY default.pa /etc/pulse/
 COPY supervisord.conf /etc/supervisor/conf.d/
 COPY syncinput.cpp ./syncinput.cpp
@@ -88,12 +97,9 @@ RUN x86_64-w64-mingw32-g++ ./syncinput.cpp -o ./syncinput.exe -lws2_32 -lpthread
 ARG APP_NAME
 COPY apps/${APP_NAME}/setup/ /root/.wine/
 
-RUN add-apt-repository ppa:lutris-team/lutris
-RUN apt-get update
-
-COPY lutris/lutris_0.5.12_all.deb lutris_0.5.12_all.deb
-RUN dpkg -i lutris_0.5.12_all.deb; exit 0
-RUN DEBIAN_FRONTEND=noninteractive apt --fix-broken install -y
-RUN DEBIAN_FRONTEND=noninteractive apt install lutris -y
+# Configure Lutris
+RUN apt install sqlite3
+COPY lutris/config/ /root/.config/lutris/games/
+COPY lutris/share/ /root/.local/share/lutris/
 
 ENTRYPOINT ["supervisord"]

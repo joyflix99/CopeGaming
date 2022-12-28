@@ -1,0 +1,22 @@
+game:
+  args: ''
+  exe: /home/owais/.wine/drive_c/R.G. Catalyst/Grand Theft Auto - Vice City/gta-vc.exe
+  prefix: ~/.wine
+  working_dir: ~/.wine/drive_c/R.G. Catalyst/Grand Theft Auto - Vice City
+system:
+  disable_runtime: true
+  env: {}
+  prefer_system_libs: true
+  prefix_command: WINEDEBUG=+keyboard
+wine:
+  Desktop: false
+  WineDesktop: 640x480
+  custom_wine_path: /media/owais/LinuxHDD2/Proton/ProtonGECustom/build/obj-wine64/wine64
+  d3d_extras: true
+  dxvk: true
+  dxvk_nvapi: true
+  esync: false
+  fsync: false
+  system_winetricks: false
+  version: system
+  vkd3d: true
