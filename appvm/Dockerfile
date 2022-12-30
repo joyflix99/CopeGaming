@@ -99,7 +99,9 @@ COPY apps/${APP_NAME}/setup/ /root/.wine/
 
 # Configure Lutris
 RUN apt install sqlite3
-COPY lutris/config/ /root/.config/lutris/games/
 COPY lutris/share/ /root/.local/share/lutris/
+COPY lutris/config/ /root/.config/lutris/
+
+RUN useradd -ms /bin/bash owais
 
 ENTRYPOINT ["supervisord"]
