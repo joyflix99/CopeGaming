@@ -1,7 +1,7 @@
 
-ARG UBUNTU_RELEASE=20.04
-ARG CUDA_VERSION=11.2.2
-FROM nvcr.io/nvidia/cudagl:${CUDA_VERSION}-runtime-ubuntu${UBUNTU_RELEASE}
+ARG UBUNTU_RELEASE=22.04
+ARG CUDA_VERSION=11.7.1
+FROM nvidia/cuda:${CUDA_VERSION}-runtime-ubuntu${UBUNTU_RELEASE}
 
 ARG UBUNTU_RELEASE
 ARG CUDA_VERSION
@@ -49,28 +49,6 @@ RUN if [ "${UBUNTU_RELEASE}" = "18.04" ]; then apt-get update && apt-get install
         \"api_version\" : \"${VULKAN_API_VERSION}\"\n\
     }\n\
 }" > /etc/vulkan/icd.d/nvidia_icd.json
-
-# Install wine
-ARG WINE_BRANCH="stable"
-RUN wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
-    && apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" \
-    && dpkg --add-architecture i386 \
-    && apt-get update \
-    && DEBIAN_FRONTEND="noninteractive" apt-get install -y --install-recommends winehq-${WINE_BRANCH} \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install winetricks
-RUN wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
-    && chmod +x /usr/bin/winetricks
-
-# Download gecko and mono installers
-COPY download_gecko_and_mono.sh /root/download_gecko_and_mono.sh
-RUN chmod +x /root/download_gecko_and_mono.sh \
-    && /root/download_gecko_and_mono.sh "$(dpkg -s wine-${WINE_BRANCH} | grep "^Version:\s" | awk '{print $2}' | sed -E 's/~.*$//')"
-
-# Install graphic libraries
-RUN winetricks d3dx9_43
-# RUN winetricks --force -q dotnet48
 
 # Silence all fixme warnings from wine
 ENV WINEDEBUG fixme-all
