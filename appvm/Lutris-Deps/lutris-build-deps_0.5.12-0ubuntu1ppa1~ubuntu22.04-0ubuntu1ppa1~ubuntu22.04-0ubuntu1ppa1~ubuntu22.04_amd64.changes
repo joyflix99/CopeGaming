@@ -1,0 +1,26 @@
+Format: 1.8
+Date: Sun, 01 Jan 2023 17:27:42 +0530
+Source: lutris-build-deps
+Binary: lutris-build-deps
+Built-For-Profiles: noudeb
+Architecture: all
+Version: 0.5.12-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04
+Distribution: unstable
+Urgency: low
+Maintainer: Equivs Dummy Package Generator <root@owais-Nitro-AN515-54>
+Changed-By: Equivs Dummy Package Generator <root@owais-Nitro-AN515-54>
+Description:
+ lutris-build-deps - build-dependencies for lutris
+Changes:
+ lutris-build-deps (0.5.12-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04) unstable; urgency=low
+ .
+   * First version
+Checksums-Sha1:
+ 692fe719c14491fa755209be42ca0fffa940ddcd 2068 lutris-build-deps_0.5.12-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04_all.deb
+ 078db0ee78e7e0bdcd04f3fd773e874506c43096 6695 lutris-build-deps_0.5.12-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04_amd64.buildinfo
+Checksums-Sha256:
+ ba2ef42826aeba9214a6abe6ba0ad88ee51fbc185a539a053ea8dea7a36f8ef8 2068 lutris-build-deps_0.5.12-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04_all.deb
+ 65ea4c9f1cb669c57d8e24737b27ed4806ccf90d90117b485d55c8006ce52438 6695 lutris-build-deps_0.5.12-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04_amd64.buildinfo
+Files:
+ 839108716bf9b40efb84fdde277e1f14 2068 devel optional lutris-build-deps_0.5.12-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04_all.deb
+ 25f07397ac6ddc65000b4868685af472 6695 devel optional lutris-build-deps_0.5.12-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04_amd64.buildinfo
