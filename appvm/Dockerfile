@@ -50,41 +50,27 @@ RUN if [ "${UBUNTU_RELEASE}" = "18.04" ]; then apt-get update && apt-get install
     }\n\
 }" > /etc/vulkan/icd.d/nvidia_icd.json
 
-# Install wine
-ARG WINE_BRANCH="stable"
-RUN wget -nv -O- https://dl.winehq.org/wine-builds/winehq.key | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add - \
-    && apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ $(grep VERSION_CODENAME= /etc/os-release | cut -d= -f2) main" \
-    && dpkg --add-architecture i386 \
-    && apt-get update \
-    && DEBIAN_FRONTEND="noninteractive" apt-get install -y --install-recommends winehq-${WINE_BRANCH} \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install winetricks
-RUN wget -nv -O /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
-    && chmod +x /usr/bin/winetricks
-
-# Download gecko and mono installers
-COPY download_gecko_and_mono.sh /root/download_gecko_and_mono.sh
-RUN chmod +x /root/download_gecko_and_mono.sh \
-    && /root/download_gecko_and_mono.sh "$(dpkg -s wine-${WINE_BRANCH} | grep "^Version:\s" | awk '{print $2}' | sed -E 's/~.*$//')"
-
-# Install graphic libraries
-RUN winetricks d3dx9_43
-# RUN winetricks --force -q dotnet48
-
 # Silence all fixme warnings from wine
 ENV WINEDEBUG fixme-all
 
+# Install Lutris dependencies
+# Add 32 bit architecture and install wine32
+RUN dpkg --add-architecture i386 && apt-get update -y
+
+COPY Lutris-Deps /Lutris-Deps
+WORKDIR /Lutris-Deps
+RUN dpkg -i ./lutris-build-deps_0.5.12-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04-0ubuntu1ppa1~ubuntu22.04_all.deb; \
+    apt-get --fix-broken install -y; apt-get update --fix-missing; 
+
+# Clone Lutris-Source
+RUN apt install git -y
+RUN git clone --branch NoRootWarning https://github.com/joyflix99/lutris.git;
+
+RUN apt install wine32 -y
+
+RUN apt-get install -y dbus-x11 libcanberra-gtk-module libcanberra-gtk3-module pciutils
+
 WORKDIR /appvm
-
-# Install lutris
-RUN add-apt-repository ppa:lutris-team/lutris
-RUN apt-get update
-
-COPY lutris/lutris_0.5.12_all.deb lutris_0.5.12_all.deb
-RUN DEBIAN_FRONTEND=noninteractive dpkg -i lutris_0.5.12_all.deb; exit 0
-RUN DEBIAN_FRONTEND=noninteractive apt --fix-broken install -y
-RUN apt-get install pciutils -y
 
 COPY default.pa /etc/pulse/
 COPY supervisord.conf /etc/supervisor/conf.d/
@@ -101,7 +87,5 @@ COPY apps/${APP_NAME}/setup/ /root/.wine/
 RUN apt install sqlite3
 COPY lutris/share/ /root/.local/share/lutris/
 COPY lutris/config/ /root/.config/lutris/
-
-RUN useradd -ms /bin/bash owais
 
 ENTRYPOINT ["supervisord"]
