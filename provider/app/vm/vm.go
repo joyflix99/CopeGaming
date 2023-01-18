@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"os"
-	"os/exec"
 	"strconv"
 
 	"github.com/docker/cli/opts"
@@ -24,7 +23,7 @@ func loadenv(rel_path string) {
 	}
 }
 
-func StartVM(id string, appName string, videoRelayPort, audioRelayPort, syncPort int) error {
+func StartVM(id string, appName string, videoRelayPort, audioRelayPort, syncPort int) (context.Context, *client.Client, string, error) {
 	log.Printf("[%s] Spinning off VM\n", id)
 
 	params := []string{
@@ -83,20 +82,14 @@ func StartVM(id string, appName string, videoRelayPort, audioRelayPort, syncPort
 		panic(err)
 	}
 
-	return resp.ID, nil
+	return ctx, cli, resp.ID, nil
 }
 
-func StopVM(id, appName string, container_id string) error {
-	log.Printf("[%s] Stopping VM\n", id)
+func StopVM(ctx context.Context, cli *client.Client, container_id string) error {
+	log.Printf("[%s] Stopping VM\n", container_id)
 
-	params := []string{
-		id,
-		appName,
+	if err := cli.ContainerStop(ctx, container_id, nil); err != nil {
+		panic(err)
 	}
-	cmd := exec.Command("./stopVM.sh", params...)
-	if err := cmd.Start(); err != nil {
-		return err
-	}
-
 	return nil
 }

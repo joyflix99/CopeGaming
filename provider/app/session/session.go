@@ -144,7 +144,8 @@ func (s *Session) start(conf *Configure) (*webrtc.WebRTC, error) {
 	// Start VM
 	appName := fmt.Sprintf("%s_%s", conf.AppID, conf.Device)
 	appId := fmt.Sprintf("%s_%s", s.playerID, utils.RandString(6))
-	if err := vm.StartVM(appId, appName, videoRelayPort, audioRelayPort, syncPort); err != nil {
+	ctx, cli, container_id, err := vm.StartVM(appId, appName, videoRelayPort, audioRelayPort, syncPort)
+	if err != nil {
 		log.Printf("[%s] Error when start VM: %s\n", s.playerID, err)
 		return nil, err
 	}
@@ -157,12 +158,9 @@ func (s *Session) start(conf *Configure) (*webrtc.WebRTC, error) {
 
 	onExitCb := func() {
 		log.Printf("[%s] Releasing allocated resources", s.playerID)
-		if err := vm.StopVM(appId, appName); err != nil {
+		if err := vm.StopVM(ctx, cli, container_id); err != nil {
 			log.Printf("[%s] Error when stopping VM: %s\n", s.playerID, err)
 		}
-
-		// Must close webrtc connection first to ensure no writing to closed inputStream
-		webrtcConn.StopClient()
 
 		// Must close listeners before streams to ensure no writing to closed channels
 		audioListener.Close()
@@ -175,6 +173,9 @@ func (s *Session) start(conf *Configure) (*webrtc.WebRTC, error) {
 
 		relayer.Close()
 		s.close()
+
+		// Must close webrtc connection first to ensure no writing to closed inputStream
+		webrtcConn.StopClient()
 	}
 	offer, err := webrtcConn.StartClient(settings.VideoCodec, s.sendIceCandidate, onExitCb)
 	if err != nil {
